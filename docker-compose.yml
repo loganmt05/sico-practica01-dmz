@@ -1,0 +1,114 @@
+services:
+  fw: 
+    image: fw 
+    build: ./fw 
+    container_name: fw 
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    networks: 
+      extranet:
+        ipv4_address: 10.5.0.1 
+      DMZ:
+        ipv4_address: 10.5.1.1
+      intranet:
+        ipv4_address: 10.5.2.1
+  
+  ext1:
+    image: ext1
+    build: ./ext1
+    container_name: ext1
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    networks:
+      extranet:
+        ipv4_address: 10.5.0.20
+    depends_on:
+    - fw
+
+  int1:
+    image: int1
+    build: ./int1
+    container_name: int1
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    networks:
+      intranet:
+        ipv4_address: 10.5.2.20
+    depends_on:
+    - fw
+  int2:
+    image: int2
+    build: ./int2
+    container_name: int2
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    networks:
+      intranet:
+        ipv4_address: 10.5.2.21
+    depends_on:
+    - fw
+  int3:
+    image: int3
+    build: ./int3
+    container_name: int3
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    networks:
+      intranet:
+        ipv4_address: 10.5.2.22
+    ports:
+      - "8090:8090"
+    volumes:
+      - ./int3/data-beszel:/opt/beszel/beszel_data
+    depends_on:
+    - fw
+  dmz1:
+    image: dmz1
+    build: ./dmz1
+    container_name: dmz1
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW    
+    networks:
+      DMZ:
+        ipv4_address: 10.5.1.20
+    depends_on:
+    - fw
+
+  dmz2:
+    image: dmz2
+    build: ./dmz2
+    container_name: dmz2
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    networks:
+      DMZ:
+        ipv4_address: 10.5.1.21
+    depends_on:
+    - fw
+
+networks:
+  extranet: 
+    driver: bridge 
+    ipam:
+      config:
+        - subnet: 10.5.0.0/24
+          gateway: 10.5.0.254 
+  DMZ:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.5.1.0/24
+          gateway: 10.5.1.254
+  intranet:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.5.2.0/24
+          gateway: 10.5.2.254
