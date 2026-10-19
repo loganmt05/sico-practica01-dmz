@@ -14,7 +14,9 @@ services:
       intranet:
         ipv4_address: 10.5.2.1
     sysctls:
+      # TODO: both ipv4 and ipv6 needed?
       net.ipv4.ip_forward: "1"
+      net.ipv6.conf.all.forwarding: "1"
   
   ext1:
     image: ext1
