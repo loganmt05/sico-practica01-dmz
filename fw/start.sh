@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# TODO: evaluate against docker-compose
-#echo 1 > /proc/sys/net/ipv4/ip_forward 
+# activate ipv4 forwarding bit
+sysctl net.ipv4.ip_forward=1 
 
 # (Part 1) Change policies for chains
 iptables -P INPUT DROP
