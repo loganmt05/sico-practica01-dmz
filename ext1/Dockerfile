@@ -5,7 +5,7 @@ RUN echo 'root:root' |chpasswd
 RUN sed -ri 's/^#?PermitRootLogin\s+.*/PermitRootLogin yes/' /etc/ssh/sshd_config
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 EXPOSE 22
-RUN echo "<h1> Practica 1 Sistemas Confiables - Este servidor est´a en Extranet </h1>" > /var/www/html/index.html
+RUN echo "<h1> Practica 1 Sistemas Confiables - Este servidor esta en Extranet </h1>" > /var/www/html/index.html
 COPY ./start.sh .
 RUN chmod +x start.sh
 CMD ["./start.sh"]

@@ -7,13 +7,25 @@ iptables -P OUTPUT ACCEPT
 
 # loopback
 iptables -A INPUT -i lo -j ACCEPT
-iptables -A OUTPUT -o lo -j ACCEPT
 
 # accept related and established connections
-iptables -A INPUT -i eth0 -p tcp -m multiport --dports 22,80,443 -m state --state ESTABLISHED,RELATED -j ACCEPT
-iptables -A OUTPUT -o eth0 -p tcp -m multiport --sports 22,80,443 -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A INPUT -p tcp -m state --state ESTABLISHED,RELATED -j ACCEPT
 
 # Permit ping
-iptables -A INPUT -p icmp --icmp-type echo-request -j ACCEPT -m limit --limit 5/second
+iptables -A INPUT -p icmp --icmp-type echo-request -m limit --limit 10/minute --limit-burst 1 -j ACCEPT
+
+# (Part 3) Allow tcp, udp, icmp traffic on FORWARD chain
+iptables -A FORWARD -p tcp -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A FORWARD -p udp -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A FORWARD -p icmp -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+# Allow traffic entering through intranet and exiting through extranet (TODO: todas las cadenas?, sin "-p" cubre todos de tcp, udp, icmp?)
+iptables -A FORWARD -p tcp -s 10.5.2.0/24 -d 10.5.0.0/24 -j ACCEPT
+iptables -A FORWARD -p udp -s 10.5.2.0/24 -d 10.5.0.0/24 -j ACCEPT
+iptables -A FORWARD -p icmp -s 10.5.2.0/24 -d 10.5.0.0/24 -j ACCEPT
+
+# (Part 4) Change IP address of output to fw extranet address
+iptables -t nat -A POSTROUTING -s 10.5.2.0/24 -d 10.5.0.0/24 -j SNAT --to 10.5.0.1
+
 
 /usr/sbin/sshd -D
