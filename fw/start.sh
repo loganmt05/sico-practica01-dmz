@@ -15,7 +15,7 @@ iptables -A INPUT -i lo -j ACCEPT
 iptables -A INPUT -p tcp -m state --state ESTABLISHED,RELATED -j ACCEPT
 
 # Permit ping
-iptables -A INPUT -p icmp --icmp-type echo-request -m limit --limit 10/minute --limit-burst 1 -j ACCEPT
+iptables -A INPUT -p icmp --icmp-type echo-request -m limit --limit 10/minute -j ACCEPT
 
 # (Part 3) Allow tcp, udp, icmp traffic on FORWARD chain
 iptables -A FORWARD -p tcp -m state --state ESTABLISHED,RELATED -j ACCEPT
