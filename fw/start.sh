@@ -36,8 +36,10 @@ iptables -A FORWARD -p tcp -s 10.5.2.0/24 -d 10.5.1.20,10.5.1.21 --dport 80 -j A
 # http extranet -> DMZ
 iptables -A FORWARD -p tcp -s 10.5.0.0/24 -d 10.5.1.20,10.5.1.21 --dport 80 -j ACCEPT
 
-# ssh int1 -> DMZ
-iptables -A FORWARD -p tcp -s 10.5.2.20 -d 10.5.1.20,10.5.1.21 --dport 22 -j ACCEPT
+# ssh int1 -> DMZ1
+iptables -A FORWARD -p tcp -s 10.5.2.20 -d 10.5.1.20 --dport 22 -j ACCEPT
+# ssh int1 -> DMZ2 (port 2222)
+iptables -A FORWARD -p tcp -s 10.5.2.20 -d 10.5.1.21 --dport 2222 -j ACCEPT
 
 
 /usr/sbin/sshd -D

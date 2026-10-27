@@ -39,6 +39,8 @@ services:
         ipv4_address: 10.5.2.20
     depends_on:
     - fw
+    volumes:
+      - ./int1/keys/pass:/home/user/.ssh/pass:ro
   int2:
     image: int2
     build: ./int2
