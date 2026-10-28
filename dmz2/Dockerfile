@@ -4,7 +4,7 @@ RUN mkdir /var/run/sshd
 RUN echo 'root:root' |chpasswd
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-# Parte 5 - cambios de sshd config
+# Parte 5.1 - cambios de sshd config
 RUN sed -i 's/^#\?Port.*/Port 2222/' /etc/ssh/sshd_config
 RUN sed -ri 's/^#?PermitRootLogin\s+.*/PermitRootLogin no/' /etc/ssh/sshd_config
 RUN useradd -m -s /bin/bash user && echo "user:user" | chpasswd
@@ -15,6 +15,7 @@ COPY --chown=user:user keys/pass.pub /home/user/.ssh/authorized_keys
 RUN sed -ri 's/^#?MaxAuthTries\s+.*/MaxAuthTries 4/' /etc/ssh/sshd_config
 COPY banner.txt /etc/ssh/banner.txt
 RUN sed -ri 's|^#?Banner.*|Banner /etc/ssh/banner.txt|' /etc/ssh/sshd_config
+RUN rm -f /etc/fail2ban/jail.d/defaults-debian.conf
 COPY jail.local /etc/fail2ban/jail.local
 
 EXPOSE 2222
