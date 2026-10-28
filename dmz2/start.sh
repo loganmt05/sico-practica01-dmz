@@ -2,13 +2,13 @@
 route add default gw 10.5.1.1
 route del default gw 10.5.1.254
 
-# Clean up stale state from previous runs (container restarts keep the filesystem)
-mkdir -p /var/run/fail2ban
-rm -f /var/run/fail2ban/fail2ban.sock /var/run/fail2ban/fail2ban.pid
-rm -f /var/run/rsyslogd.pid
+# # Clean up stale state from previous runs (container restarts keep the filesystem)
+# mkdir -p /var/run/fail2ban
+# rm -f /var/run/fail2ban/fail2ban.sock /var/run/fail2ban/fail2ban.pid
+# rm -f /var/run/rsyslogd.pid
  
-# fail2ban won't start a jail whose logfile is missing
-touch /var/log/auth.log
+# # fail2ban won't start a jail whose logfile is missing
+# touch /var/log/auth.log
 
 # Parte 5.2 - create certificate for SSL
 openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
