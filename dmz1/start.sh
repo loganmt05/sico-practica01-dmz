@@ -16,4 +16,7 @@ a2enmod ssl
 a2ensite default-ssl.conf
 service apache2 start
 
+# Part 5.3: Cowrie
+su - cowrie -c "cd /home/cowrie/my-honeypot && . cowrie-env/bin/activate && cowrie start"
+
 /usr/sbin/sshd -D
