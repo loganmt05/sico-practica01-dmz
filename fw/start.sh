@@ -49,7 +49,8 @@ iptables -A FORWARD -p tcp -s 10.5.0.0/24 -d 10.5.1.20,10.5.1.21 --dport 443 -j 
 
 # Part 5.3: Cowrie
 iptables -t nat -A PREROUTING -s 10.5.0.0/24 -d 10.5.1.20 -p tcp --dport 22 -j DNAT --to-destination 10.5.1.20:2222
-iptables -A FORWARD -s 10.5.0.0/24 -d 10.5.1.20 -p tcp --dport 2222 -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
+iptables -I FORWARD 1 -s 10.5.0.0/24 -d 10.5.1.20 -p tcp --dport 2222 -m conntrack --ctstate NEW --ctorigdstport 2222 -j DROP
+iptables -A FORWARD -s 10.5.0.0/24 -d 10.5.1.20 -p tcp --dport 2222 -m conntrack --ctstate NEW,ESTABLISHED --ctorigdstport 22 -j ACCEPT
 iptables -A FORWARD   -s 10.5.1.20 -d 10.5.0.0/24   -p tcp   -m conntrack --ctstate ESTABLISHED,RELATED   -j ACCEPT
 iptables -t nat -A POSTROUTING -s 10.5.0.0/24 -d 10.5.1.20 -p tcp --dport 2222 -j SNAT --to-source 10.5.1.1
 
