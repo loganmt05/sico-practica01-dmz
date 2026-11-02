@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # activate ipv4 forwarding bit
-sysctl net.ipv4.ip_forward=1 
+echo 1 > /proc/sys/net/ipv4/ip_forward
 
 # (Part 1) Change policies for chains
 iptables -P INPUT DROP
@@ -54,5 +54,8 @@ iptables -A FORWARD -s 10.5.0.0/24 -d 10.5.1.20 -p tcp --dport 2222 -m conntrack
 iptables -A FORWARD   -s 10.5.1.20 -d 10.5.0.0/24   -p tcp   -m conntrack --ctstate ESTABLISHED,RELATED   -j ACCEPT
 iptables -t nat -A POSTROUTING -s 10.5.0.0/24 -d 10.5.1.20 -p tcp --dport 2222 -j SNAT --to-source 10.5.1.1
 
+# Part 5.4. Beszel: dmz1 and dmz2 agents initiate connection with Hub (int3:8090)
+iptables -A FORWARD -s 10.5.1.20 -d 10.5.2.22 -p tcp --dport 8090 -j ACCEPT
+iptables -A FORWARD -s 10.5.1.21 -d 10.5.2.22 -p tcp --dport 8090 -j ACCEPT
 
 /usr/sbin/sshd -D

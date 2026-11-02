@@ -15,12 +15,19 @@ COPY --chown=user:user keys/pass.pub /home/user/.ssh/authorized_keys
 RUN sed -ri 's/^#?MaxAuthTries\s+.*/MaxAuthTries 4/' /etc/ssh/sshd_config
 COPY banner.txt /etc/ssh/banner.txt
 RUN sed -ri 's|^#?Banner.*|Banner /etc/ssh/banner.txt|' /etc/ssh/sshd_config
-# TODO: remove?
 RUN rm -f /etc/fail2ban/jail.d/defaults-debian.conf
 COPY jail.local /etc/fail2ban/jail.local
 
 EXPOSE 2222
 RUN echo "<h1>Practica 1 Sistemas Confiables - Este servidor está en la máquina dmz2</h1>" > /var/www/html/index.html
+
+# Part 5.4: Beszel agent
+RUN apt-get update && apt-get install -y curl ca-certificates \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN useradd -r -m -d /var/lib/beszel-agent -s /usr/sbin/nologin beszel \
+    && mkdir -p /opt/beszel-agent && cd /opt/beszel-agent \
+    && curl -sL "https://github.com/henrygd/beszel/releases/latest/download/beszel-agent_$(uname -s)_$(uname -m | sed -e 's/x86_64/amd64/' -e 's/armv6l/arm/' -e 's/armv7l/arm/' -e 's/aarch64/arm64/').tar.gz" | tar -xz beszel-agent
+
 COPY ./start.sh .
 RUN chmod +x start.sh
 CMD ["./start.sh"]

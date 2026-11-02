@@ -28,6 +28,13 @@ RUN echo 'sico:x:sicopassword' > my-honeypot/etc/userdb.txt
 USER root
 WORKDIR /
 
+# Part 5.4: Beszel agent
+RUN apt-get update && apt-get install -y curl ca-certificates \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN useradd -r -m -d /var/lib/beszel-agent -s /usr/sbin/nologin beszel \
+    && mkdir -p /opt/beszel-agent && cd /opt/beszel-agent \
+    && curl -sL "https://github.com/henrygd/beszel/releases/latest/download/beszel-agent_$(uname -s)_$(uname -m | sed -e 's/x86_64/amd64/' -e 's/armv6l/arm/' -e 's/armv7l/arm/' -e 's/aarch64/arm64/').tar.gz" | tar -xz beszel-agent
+
 COPY ./start.sh .
 RUN chmod +x start.sh
 CMD ["./start.sh"]

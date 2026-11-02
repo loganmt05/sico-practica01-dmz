@@ -19,4 +19,13 @@ service apache2 start
 # Part 5.3: Cowrie
 su - cowrie -c "cd /home/cowrie/my-honeypot && . cowrie-env/bin/activate && cowrie start"
 
+# Part 5.4: Beszel agent
+HUB_URL="http://10.5.2.22:8090" \
+TOKEN="d4cadb0b-3e4d-446e-877c-3118e91a6f06" \
+KEY="ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIF5fU2TYZOiGtUJkHxgy6JtBzrW/paFNq8Z3qDYLnA1s" \
+DISABLE_SSH=true \
+USE_CGROUP=true \
+DATA_DIR=/var/lib/beszel-agent \
+runuser -u beszel -- /opt/beszel-agent/beszel-agent > /var/log/beszel-agent.log 2>&1 &
+
 /usr/sbin/sshd -D

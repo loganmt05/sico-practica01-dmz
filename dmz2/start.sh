@@ -26,4 +26,13 @@ service apache2 start
 rsyslogd
 fail2ban-server -x -b
 
+# Part 5.4: Beszel agent
+HUB_URL="http://10.5.2.22:8090" \
+TOKEN="4f0e9cd0-7525-4162-99ec-f3165818221d" \
+KEY="ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIF5fU2TYZOiGtUJkHxgy6JtBzrW/paFNq8Z3qDYLnA1s" \
+DISABLE_SSH=true \
+USE_CGROUP=true \
+DATA_DIR=/var/lib/beszel-agent \
+runuser -u beszel -- /opt/beszel-agent/beszel-agent > /var/log/beszel-agent.log 2>&1 &
+
 /usr/sbin/sshd -D
