@@ -69,6 +69,10 @@ services:
       - ./int3/data-beszel:/opt/beszel/beszel_data
     depends_on:
     - fw
+    environment:
+    - USER_EMAIL=admin@sico.com
+    - USER_PASSWORD=sicopassword
+    - APP_URL=http://localhost:8090
   dmz1:
     image: dmz1
     build: ./dmz1
