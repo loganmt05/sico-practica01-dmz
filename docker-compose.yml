@@ -39,6 +39,8 @@ services:
         ipv4_address: 10.5.2.20
     depends_on:
     - fw
+    volumes:
+      - ./int1/keys/pass:/home/user/.ssh/pass:ro
   int2:
     image: int2
     build: ./int2
@@ -67,6 +69,10 @@ services:
       - ./int3/data-beszel:/opt/beszel/beszel_data
     depends_on:
     - fw
+    environment:
+    - USER_EMAIL=admin@sico.com
+    - USER_PASSWORD=sicopassword
+    - APP_URL=http://localhost:8090
   dmz1:
     image: dmz1
     build: ./dmz1
